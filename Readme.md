@@ -9,7 +9,7 @@ Installation
 1.  Clone the repository:
     
     
-    `git clone https://github.com/jonathan_adly/galenai_streaming_demo.git`
+    `git clone https://github.com/Jonathan-Adly/galenai_streaming_demo`
     
 2.  Install the required dependencies using pip:
     
