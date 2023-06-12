@@ -9,10 +9,11 @@ def home():
     if request.method == "POST":
         query = request.form["question"]  # get question from user
         # send question to GalenAI server
-        url = "https://galenai.co/api/v1/get-clinical-query-streaming-channel/"
-        payload = {"query": query}
-        token = f"token {your_token}"  # your token here
-        headers = {"Authorization": token, "Content-Type": "application/json"}
+        url = "https://galenai.co/api/v1/get-clinical-query-streaming-channel/" 
+        payload = {'query': query}
+        # payload = {"query": query, "clinical_summary_mode": True} for clinical summary mode
+        token = f"token {your_token}" #your token here
+        headers = {'Authorization': token, 'Content-Type': 'application/json'}
         response = requests.post(url, json=payload, headers=headers)
 
         # by default, GalenAI will not process queries outside of scope of the model.
