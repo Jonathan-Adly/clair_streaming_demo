@@ -8,8 +8,12 @@ app = Flask(__name__)
 def home():
     if request.method == "POST":
         query = request.form["question"]  # get question from user
+        #base_url = "http://localhost:8000" 
+        
+        base_url = "https://galenai.co/" # for production
+
         # send question to GalenAI server
-        url = "https://galenai.co/api/v1/get-clinical-query-streaming-channel/" 
+        url = f"{base_url}/api/v1/get-clinical-query-streaming-channel/" 
         payload = {'query': query}
         # payload = {"query": query, "clinical_summary_mode": True} for clinical summary mode
         token = f"token {your_token}" #your token here
@@ -18,7 +22,7 @@ def home():
 
         # by default, GalenAI will not process queries outside of scope of the model.
         if response.status_code != 200:
-            return render_template("index.html", error=response.json()["details"])
+            return render_template("index.html", error=response.json()["detail"])
 
         # get a channel_name where generated text will be sent too as SSE (server sent events) as they become ready immmediately
         # Each request is a new channel_name generated on the fly.
@@ -30,7 +34,7 @@ def home():
 
         # client will call ready to listen endpoint, then listen to the SSE as they become ready
         return render_template(
-            "listening.html", channel_name=channel_name, query_id=query_id
+            "listening.html", channel_name=channel_name, query_id=query_id, base_url=base_url
         )
 
     return render_template("index.html")
