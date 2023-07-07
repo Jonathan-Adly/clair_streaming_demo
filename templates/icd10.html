@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ICD10 Form</title>
+</head>
+<body>
+  <h1>ICD10 Form</h1>
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+  <form action="/icd10" method="POST">
+    <label for="icd10">ICD 10 codes:</label>
+    <input type="text" id="icd10" name="icd10_codes" required placeholder="C50, I20">
+    <p> Enter up to 5 codes separated by commas</p>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>
