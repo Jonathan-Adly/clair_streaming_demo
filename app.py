@@ -8,9 +8,9 @@ app = Flask(__name__)
 def home():
     if request.method == "POST":
         query = request.form["question"]  # get question from user
-        base_url = "http://localhost:8000" 
+        #base_url = "http://localhost:8000" 
         
-        #base_url = "https://galenai.co/" # for production
+        base_url = "https://galenai.co/" # for production
 
         # send question to GalenAI server
         url = f"{base_url}/api/v1/get-clinical-query-streaming-channel/" 
@@ -72,7 +72,7 @@ def icd10():
 @app.route("/stewardship", methods=["GET", "POST"])
 def stewardship():
     if request.method == "POST":
-        base_url = "http://localhost:8000"
+        base_url = "https://galenai.co/"
         infection = request.form["infection"]  # get infection from user
         age = int(request.form["age"]) if request.form['age'] else None  # get age from user
         weight = int(request.form["weight"]) if request.form['weight'] else None # get weight from user
@@ -94,7 +94,7 @@ def stewardship():
         if liver_disease:
             payload["liver_disease"] = liver_disease
 
-        token = f"token 61cbb3ba57ef2e7d92bc1f1161a87fbd3922acca" #your token here
+        token = f"token {your_token}" #your token here
 
         headers = {'Authorization': token, 'Content-Type': 'application/json'}
         response = requests.post(url, json=payload, headers=headers)
@@ -103,7 +103,7 @@ def stewardship():
 
         channel_name = response.json()["channel_name"]
         query_id = response.json()["query_id"]
-        
+
         return render_template("listening_stewardship.html", channel_name=channel_name, query_id=query_id, base_url=base_url)
 
     return render_template("stewardship.html")
