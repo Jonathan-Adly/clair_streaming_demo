@@ -25,8 +25,8 @@ Before running the application, you need to provide your GalenAI access token. Y
 Follow these steps:
 
 1.  Open the `app.py` file.
-2.  Locate the line `token = f"token {your_token}"`.
-3.  Replace `your_token` with your actual GalenAI access token.
+2.  Locate the line `TOKEN = ""`.
+3.  Replace `TOKEN` with your actual GalenAI access token.
 
 You should use enviromental variables in production.
 
@@ -35,7 +35,7 @@ Usage
 
 To start the Flask application, run the following command:
 
-`python app.py`
+`flask run`
 
 This will start the Flask development server, and you should see the application running on `http://localhost:5000`.
 

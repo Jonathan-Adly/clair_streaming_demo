@@ -9,6 +9,7 @@
   <button onclick="start()">Start Listening</button>  <!-- button is here for illustration, should call start on window load-->
 <p id="error"> </p>
 <p id="answer"> Answer: </p>
+<p id="references"> References <br>  </p>
 
 
 <script src="{{base_url}}/static/js/galenSDK.min.js"> </script>
@@ -33,6 +34,17 @@
         channel.bind("answer", function (data) {
             document.getElementById("answer").innerHTML += data.text;
         });
+
+         // references
+         channel.bind("references", function (data) {
+            // make a div for title, doi, url, abstract inside references 
+            document.getElementById("references").innerHTML += "<div> title:" + data.title + "</div>";
+            if (data.doi != null) {
+            document.getElementById("references").innerHTML += "<div> doi:" + data.doi + "</div>";
+            document.getElementById("references").innerHTML += "<div> url:" + data.url + "</div>";
+            document.getElementById("references").innerHTML += "<div> abstract:" + data.abstract + "</div>";
+                }   
+            });
 
         // end
         channel.bind("end", function (data) {
