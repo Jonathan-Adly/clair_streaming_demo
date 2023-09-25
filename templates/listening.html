@@ -15,7 +15,12 @@
 <script src="{{base_url}}/static/js/galenSDK.min.js"> </script>
 
 <script> 
-   
+    /*
+    // this is how you would call start on window load
+       window.onload = function() {
+        start();
+    };
+    */
     function start() {
         // this comes from the galenAI server
         var channelName = "{{ channel_name }}" 
@@ -54,7 +59,7 @@
         // end
         channel.bind("end", function (data) {
         console.log("ended stream..");
-        // do something when the stream ends
+            channel.unbind();
             });
         });
         

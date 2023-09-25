@@ -36,6 +36,7 @@
 
         // end
         channel.bind("end", function (data) {
+        channel.unbind(); //unbind the channel when you are done listening
         console.log("ended stream..");
         // do something when the stream ends
             });
