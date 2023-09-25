@@ -59,7 +59,7 @@
         // end
         channel.bind("end", function (data) {
         console.log("ended stream..");
-            channel.unbind();
+            channel.unbind(); //unbind the channel when you are done listening
             });
         });
         
