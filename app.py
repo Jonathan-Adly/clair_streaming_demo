@@ -130,5 +130,39 @@ def stewardship():
     return render_template("stewardship.html")
 
 
+@app.route("/interactions", methods=["GET", "POST"])
+def interactions():
+    if request.method == "POST":
+        # get the comma separated drugs and turn into a list, stripping all spaces
+        drug_list = [drug.strip().lower() for drug in request.form["drugs"].split(",")]
+        print(drug_list)
+        # send question to GalenAI server
+        url = f"{BASE_URL}/api/v1/create-interactions-streaming-channel/"
+        payload = {"drugs": drug_list}
+        token = f"token {TOKEN}"  # your token here
+        headers = {"Authorization": token, "Content-Type": "application/json"}
+        response = requests.post(url, json=payload, headers=headers)
+
+        # handle errors.
+        if response.status_code != 200:
+            return render_template("interactions.html", error=response.json()["detail"])
+
+        # get a channel_name where generated text will be sent too as SSE (server sent events) as they become ready immmediately
+        # Each request is a new channel_name generated on the fly.
+        channel_name = response.json()["channel_name"]
+
+        # once the query is finished streaming, you can retrieve the full details via this query_id
+        # Save this in your DB to retrieve the full details later
+        query_id = response.json()["query_id"]
+        return render_template(
+            "listening_interactions.html",
+            channel_name=channel_name,
+            query_id=query_id,
+            base_url=BASE_URL,
+        )
+
+    return render_template("interactions.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True)

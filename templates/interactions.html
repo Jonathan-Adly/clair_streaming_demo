@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Itnteractions Form</title>
+</head>
+<body>
+  <h1>Interactions Form</h1>
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+  <form action="/interactions" method="POST">
+    <label for="drugs">Drugs:</label>
+    <input type="text" id="drugs" name="drugs" required placeholder="atorvastatin, norvasc">
+    <p> Enter up to 25 drugs separated by commas</p>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>
