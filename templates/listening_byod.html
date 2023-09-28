@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BYOD Listening Page</title>
+</head>
+<body>
+  <h1>Channel Name: {{channel_name}}</h1>
+  <p>Query_ID = {{query_id}}</p>
+  <button onclick="start()">Start Listening</button>  <!-- button is here for illustration, should call start on window load-->
+<p id="error"> </p>
+<p id="answer"> Answer: </p>
+<p id="context"> Context: </p>
+<p id="references"> References <br>  </p>
+
+<script src="{{base_url}}/static/js/galenSDK.min.js"> </script>
+
+<script> 
+    /*
+    // this is how you would call start on window load
+       window.onload = function() {
+        start();
+    };
+    */
+    function start() {
+        // this comes from the galenAI server
+        var channelName = "{{ channel_name }}" 
+        var queryID = "{{ query_id }}"
+       
+        // connect to the channel and listen to events. This must be done first, before calling the ReadyTOListen function
+        galenConnect(channelName, queryID, function(channel) {
+        
+        // start of stream
+        channel.bind('start', function(data) {
+            console.log("started stream..");
+            //set up your DOM for receiving the data
+        });
+
+        // answer
+        channel.bind("answer", function (data) {
+            document.getElementById("answer").innerHTML += data.text;
+        });
+
+        // context
+        channel.bind("context", function (data) {
+            document.getElementById("context").innerHTML += data.text;
+        });
+
+        // references
+        channel.bind("references", function (data) {
+            // make a div for title, doi, url, abstract inside references 
+            document.getElementById("references").innerHTML += "<div> title:" + data.reference.title + "</div>";
+           
+            document.getElementById("references").innerHTML += "<div> Confidence:" + data.reference.confidence + "</div>";
+       
+            // text can be large - optional to display
+            //document.getElementById("references").innerHTML += "<div> text:" + data.reference.text + "</div>";
+             
+            });
+
+        // end
+        channel.bind("end", function (data) {
+        console.log("ended stream..");
+            channel.unbind(); //unbind the channel when you are done listening
+            });
+        });
+        
+        
+        
+        // Call the ready to listen.
+        // note - this function, must be called after the channel is connected.
+        // only call when you are ready to receive events
+        galenReadyToListen(channelName, queryID);
+      
+
+    }     
+        
+</script>

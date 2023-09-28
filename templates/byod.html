@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BYOD Form</title>
+</head>
+<body>
+  <h1>BYOD Form</h1>
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+  <form action="/byod" method="POST">
+    <label for="question">Question:</label>
+    <input type="text" id="question" name="question" required>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+
+</body>
+</html>

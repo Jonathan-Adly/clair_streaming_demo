@@ -164,5 +164,44 @@ def interactions():
     return render_template("interactions.html")
 
 
+@app.route("/byod", methods=["GET", "POST"])
+def byod():
+    # you should upload a document via the GalenAI UI or the API first
+    if request.method == "POST":
+        query = request.form["question"]  # get question from user
+
+        # send question to GalenAI server
+        url = f"{BASE_URL}/api/v1/create-byod-streaming-channel/"
+        # it is best practice to always upload documents with a collection_name so you can easily retrieve them later
+        payload = {"query": query, "collection_name": "test"}
+
+        # payload = {"query": query, "clinical_summary_mode": True} for clinical summary mode
+        token = f"token {TOKEN}"  # your token here
+        headers = {"Authorization": token, "Content-Type": "application/json"}
+        response = requests.post(url, json=payload, headers=headers)
+
+        # by default, GalenAI will not process queries outside of scope of the model.
+        if response.status_code != 200:
+            return render_template("byod.html", error=response.json()["detail"])
+
+        # get a channel_name where generated text will be sent too as SSE (server sent events) as they become ready immmediately
+        # Each request is a new channel_name generated on the fly.
+        channel_name = response.json()["channel_name"]
+
+        # once the query is finished streaming, you can retrieve the full details via this query_id
+        # Save this in your DB to retrieve the full details later
+        query_id = response.json()["query_id"]
+
+        # client will call ready to listen endpoint, then listen to the SSE as they become ready
+        return render_template(
+            "listening_byod.html",
+            channel_name=channel_name,
+            query_id=query_id,
+            base_url=BASE_URL,
+        )
+
+    return render_template("byod.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True)
