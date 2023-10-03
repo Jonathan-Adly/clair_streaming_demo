@@ -39,6 +39,14 @@
         channel.bind("answer", function (data) {
             document.getElementById("answer").innerHTML += data.text;
         });
+        
+        //optional, allows you to render clean html (instead of markdown), once
+        // the answer is complete
+        // you will not get this if the answer is cached
+        channel.bind("answer_done", function (data) {
+       
+            document.getElementById("answer").innerHTML = data.text;
+        });
 
         // context
         channel.bind("context", function (data) {
