@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Med Review Form</title>
+</head>
+<body>
+  <h1>Med Review Form</h1>
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+  <form action="/med-review" method="POST">
+    <!-- End point can accept ICD 10 codes or disease, one is required. Sending both will reject. -->
+    <!-- 
+    <label for="icd10">ICD 10 codes:</label>
+    <input type="text" id="icd10" name="icd10_codes" required placeholder="C50, I20">
+    <p> Enter up to 10 codes separated by commas</p>
+    --> 
+    <label for="diseases">Medical Conditions:</label>
+    <input type="text" id="diseases" name="diseases" required placeholder="Diabetes, HTN">
+    <p> Enter up to 10 diseases separated by commas</p>
+    <br><br>
+    <label for="drugs">Medications:</label>
+    <input type="text" id="drugs" name="drugs" required placeholder="liptior 10mg daily, norvasc 5mg daily">
+    <p> Enter up to 15 drugs separated by commas</p>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>

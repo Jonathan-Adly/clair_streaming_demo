@@ -15,19 +15,13 @@
 <script src="{{base_url}}/static/js/galenSDK.min.js"> </script>
 
 <script> 
-
-/*
-window.onload = function() {
-    start();
-};
-*/
     function start() {
         // this comes from the galenAI server
         var channelName = "{{ channel_name }}" 
         var queryID = "{{ query_id }}"
        
         // connect to the channel and listen to events. This must be done first, before calling the ReadyTOListen function
-        galenConnect(channelName, queryID, function(channel) {
+        galenConnect(channelName, queryID).then(function(channel){
 
         // start of stream
         channel.bind('start', function(data) {
@@ -94,6 +88,9 @@ window.onload = function() {
         console.log("ended stream..");
         // do something when the stream ends
             });
+        }).catch(function(error){
+            // handle error
+         console.log(error);   
         });
         
         

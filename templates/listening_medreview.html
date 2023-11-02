@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Listening ICD10 Page</title>
+  <title>Listening Med Review Page</title>
 </head>
 <body>
   <h1>Channel Name: {{channel_name}}</h1>
   <p>Query_ID = {{query_id}}</p>
   <button onclick="start()">Start Listening</button>  <!-- button is here for illustration, should call start on window load-->
 <p id="error"> </p>
-<p id="answer"> Clinical Summary: </p>
+<p id="answer"> Medication Review: </p>
 
 
 <script src="{{base_url}}/static/js/galenSDK.min.js"> </script>
@@ -32,6 +32,11 @@
         // answer
         channel.bind("answer", function (data) {
             document.getElementById("answer").innerHTML += data.text;
+        });
+
+        //answer_done (optional - givens clean html, instead of potential markdown)
+        channel.bind("answer_done", function (data) {
+            document.getElementById("answer").innerHTML = data.text;
         });
 
         // end

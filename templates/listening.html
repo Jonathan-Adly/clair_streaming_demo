@@ -12,7 +12,7 @@
 <p id="context"> Context: </p>
 <p id="references"> References <br>  </p>
 
-<script src="{{base_url}}/static/js/galenSDK.min.js"> </script>
+<script src="{{base_url}}/static/js/galenSDK.min.js" defer> </script>
 
 <script> 
     /*
@@ -21,64 +21,89 @@
         start();
     };
     */
-    function start() {
-        // this comes from the galenAI server
-        var channelName = "{{ channel_name }}" 
-        var queryID = "{{ query_id }}"
-       
-        // connect to the channel and listen to events. This must be done first, before calling the ReadyTOListen function
-        galenConnect(channelName, queryID, function(channel) {
+
+    function start (){ 
         
-        // start of stream
-        channel.bind('start', function(data) {
-            console.log("started stream..");
-            //set up your DOM for receiving the data
-        });
+        // handle event stream 
+        let channelName = "{{ channel_name }}" 
+        let queryID = "{{ query_id }}"
 
-        // answer
-        channel.bind("answer", function (data) {
-            document.getElementById("answer").innerHTML += data.text;
-        });
-        
-        //optional, allows you to render clean html (instead of markdown), once
-        // the answer is complete
-        // you will not get this if the answer is cached
-        channel.bind("answer_done", function (data) {
-       
-            document.getElementById("answer").innerHTML = data.text;
-        });
-
-        // context
-        channel.bind("context", function (data) {
-            document.getElementById("context").innerHTML += data.text;
-        });
-
-        // references
-        channel.bind("references", function (data) {
-            // make a div for title, doi, url, abstract inside references 
-            document.getElementById("references").innerHTML += "<div> title:" + data.title + "</div>";
-            if (data.doi != null) {
-            document.getElementById("references").innerHTML += "<div> doi:" + data.doi + "</div>";
-            document.getElementById("references").innerHTML += "<div> url:" + data.url + "</div>";
-            document.getElementById("references").innerHTML += "<div> abstract:" + data.abstract + "</div>";
-                }   
+        galenConnect(channelName, queryID).then(function(channel) {
+            //error 
+            channel.bind('error', function(data) {
+              console.log("Error: " + data);
             });
-
-        // end
-        channel.bind("end", function (data) {
-        console.log("ended stream..");
-            channel.unbind(); //unbind the channel when you are done listening
+  
+            // start event
+            channel.bind('start', function(data) {
+                console.log("started stream..");
             });
+  
+            // answer event
+            channel.bind("answer", function (data) {
+              let text = data.text;
+              document.getElementById("answer").innerHTML += text;
+            
+            });
+  
+            // answer_done event
+            channel.bind("answer_done", function (data) {
+              let complete_answer = data.text;
+              document.getElementById("answer").innerHTML = complete_answer;
+
+            });
+  
+            // context event
+            channel.bind("context", function (data) {
+                document.getElementById("context").innerHTML += data.text;
+            });
+  
+            // references event
+            channel.bind("references", function(data) {
+                document.getElementById("references").innerHTML += "<div> title:" + data.title + "</div>";
+                if (data.doi != null) {
+                document.getElementById("references").innerHTML += "<div> doi:" + data.doi + "</div>";
+                document.getElementById("references").innerHTML += "<div> url:" + data.url + "</div>";
+                document.getElementById("references").innerHTML += "<div> abstract:" + data.abstract + "</div>";
+                    }   
+            });
+            
+            // end event
+            channel.bind("end", function(data) {
+                console.log("ended stream..");
+                channel.unbind(); //unbind the channel when you are done listening
+                });
+              
+        }).catch(function(error) {
+          console.log("Error: " + error);
         });
-        
-        
-        
+         
         // Call the ready to listen.
         // note - this function, must be called after the channel is connected.
         // only call when you are ready to receive events
-        galenReadyToListen(channelName, queryID);
+            galenReadyToListen(channelName, queryID);
       
+        }
+/*
+old SDK: 
+function start() {
+    galenConnect(channelName, queryID, function(channel) {
+        channel.bind('start', function(data) {
+            console.log("started stream..");
+        });
+    });
+}
 
-    }     
-        
+new SDK:
+function start() {
+    galenConnect(channelName, queryID).then(function(channel) {
+        channel.bind('start', function(data) {
+            console.log("started stream..");
+        });
+    }).catch(function(error) {
+        console.log("Error: " + error);
+    });
+}
+*/
+  
 </script>

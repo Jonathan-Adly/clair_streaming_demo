@@ -27,7 +27,7 @@
         var queryID = "{{ query_id }}"
        
         // connect to the channel and listen to events. This must be done first, before calling the ReadyTOListen function
-        galenConnect(channelName, queryID, function(channel) {
+        galenConnect(channelName, queryID).then(function(channel) {
         
         // start of stream
         channel.bind('start', function(data) {
@@ -48,12 +48,12 @@
         // references
         channel.bind("references", function (data) {
             // make a div for title, doi, url, abstract inside references 
-            document.getElementById("references").innerHTML += "<div> title:" + data.reference.title + "</div>";
+            document.getElementById("references").innerHTML += "<div> title:" + data.title + "</div>";
            
-            document.getElementById("references").innerHTML += "<div> Confidence:" + data.reference.confidence + "</div>";
+            document.getElementById("references").innerHTML += "<div> Confidence:" + data.confidence + "</div>";
        
             // text can be large - optional to display
-            //document.getElementById("references").innerHTML += "<div> text:" + data.reference.text + "</div>";
+            //document.getElementById("references").innerHTML += "<div> text:" + data.text + "</div>";
              
             });
 
@@ -62,6 +62,8 @@
         console.log("ended stream..");
             channel.unbind(); //unbind the channel when you are done listening
             });
+        }).catch(function(error) {
+            console.log("error connecting to channel: " + error);
         });
         
         

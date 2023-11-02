@@ -3,9 +3,11 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-BASE_URL = "https://galenai.co"
-# BASE_URL = "http://localhost:8000"
-TOKEN = ""
+# BASE_URL = "https://galenai.co" # use this for production
+BASE_URL = (
+    "http://ec2-3-235-145-235.compute-1.amazonaws.com:8000"  # sandbox environment
+)
+TOKEN = ""  # request a free test token by emailing support@mg.galenai.com
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -20,7 +22,6 @@ def home():
         token = f"token {TOKEN}"  # your token here
         headers = {"Authorization": token, "Content-Type": "application/json"}
         response = requests.post(url, json=payload, headers=headers)
-
         # by default, GalenAI will not process queries outside of scope of the model.
         if response.status_code != 200:
             return render_template("index.html", error=response.json()["detail"])
@@ -201,6 +202,47 @@ def byod():
         )
 
     return render_template("byod.html")
+
+
+@app.route("/med-review", methods=["GET", "POST"])
+def med_review():
+    if request.method == "POST":
+        # codes = request.form["codes"]  endpoint accept codes or diseases, but not both
+        # codes = [code.strip().upper() for code in codes.split(",")]
+        diseaes = request.form["diseases"]
+        # turn diseases to list
+        diseaes = [disease.strip().lower() for disease in diseaes.split(",")]
+
+        drugs = request.form["drugs"]
+        # turn drugs to list
+        drugs = [drug.strip().lower() for drug in drugs.split(",")]
+        # send question to GalenAI server
+        url = f"{BASE_URL}/api/v1/create-med-review-streaming-channel/"
+        payload = {"diseases": diseaes, "drugs": drugs}
+        token = f"token {TOKEN}"
+        headers = {"Authorization": token, "Content-Type": "application/json"}
+        response = requests.post(url, json=payload, headers=headers)
+
+        # handle errors.
+        if response.status_code != 200:
+            return render_template("med-review.html", error=response.json()["detail"])
+
+        # get a channel_name where generated text will be sent too as SSE (server sent events) as they become ready immmediately
+        # Each request is a new channel_name generated on the fly.
+        channel_name = response.json()["channel_name"]
+
+        # once the query is finished streaming, you can retrieve the full details via this query_id
+        # Save this in your DB to retrieve the full details later
+        query_id = response.json()["query_id"]
+
+        # client will call ready to listen endpoint, then listen to the SSE as they become ready
+        return render_template(
+            "listening_medreview.html",
+            channel_name=channel_name,
+            query_id=query_id,
+            base_url=BASE_URL,
+        )
+    return render_template("med-review.html")
 
 
 if __name__ == "__main__":
