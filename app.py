@@ -5,8 +5,10 @@ app = Flask(__name__)
 
 # BASE_URL = "https://galenai.co" # use this for production
 BASE_URL = (
-    "http://ec2-3-235-145-235.compute-1.amazonaws.com:8000"  # sandbox environment
+    ""  # request access to a sandbox environment  by emailing support@mg.galenai.com
 )
+
+
 TOKEN = ""  # request a free test token by emailing support@mg.galenai.com
 
 
