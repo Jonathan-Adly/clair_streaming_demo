@@ -4,12 +4,12 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 # BASE_URL = "https://galenai.co" # use this for production
-BASE_URL = (
-    ""  # request access to a sandbox environment  by emailing support@mg.galenai.com
-)
 
+# request access to a sandbox environment  by emailing support@mg.galenai.com
+BASE_URL = ""
 
-TOKEN = ""  # request a free test token by emailing support@mg.galenai.com
+# request a free test token by emailing support@mg.galenai.com
+TOKEN = ""
 
 
 @app.route("/", methods=["GET", "POST"])

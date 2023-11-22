@@ -47,10 +47,11 @@
         channel.bind("new_interaction", function (data) {
                 let id = data.id;
            // make a new div for each new interaction that has drug pair, description, recommendation, references
-               document.getElementById("answer").innerHTML += `<div id=${id}-drug-pair> "</div>`;
-
-                document.getElementById("answer").innerHTML += `<div id=${id}-description> "</div>`;
+                document.getElementById("answer").innerHTML += `<div id=${id}-drug-pair> "</div>`;
+                document.getElementById("answer").innerHTML += `<div id=${id}-severity> "</div>`;
                 document.getElementById("answer").innerHTML += `<div id=${id}-recommendation> "</div>`;
+                document.getElementById("answer").innerHTML += `<div id=${id}-management> "</div>`;
+                document.getElementById("answer").innerHTML += `<div id=${id}-description> "</div>`;
                 document.getElementById("answer").innerHTML += `<div id=${id}-references> "</div>`;
             
         });
@@ -61,16 +62,27 @@
             document.getElementById(`${data.id}-drug-pair`).innerHTML += data.text;
         });
 
+        channel.bind("severity", function (data) {
+            // add the severity to the div
+            document.getElementById(`${data.id}-severity`).innerHTML += data.text;
+        });
+        
+        channel.bind("recommendation", function (data) {
+            // add the recommendation to the div
+            document.getElementById(`${data.id}-recommendation`).innerHTML += data.text;
+        });
+
+        channel.bind("management", function (data) {
+            // add the management to the div
+            document.getElementById(`${data.id}-management`).innerHTML += data.text;
+        });
 
         channel.bind("description", function (data) {
             // add the description to the div
             document.getElementById(`${data.id}-description`).innerHTML += data.text;
         });
 
-        channel.bind("recommendation", function (data) {
-            // add the recommendation to the div
-            document.getElementById(`${data.id}-recommendation`).innerHTML += data.text;
-        });
+        
 
         channel.bind("references", function (data) {
             // make a div for title, doi, url, abstract inside references 
