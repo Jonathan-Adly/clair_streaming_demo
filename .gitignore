@@ -6,7 +6,7 @@ dev.env
 .env.staging.db
 .venv
 env/
-venv/
+ga-str-venv/
 ENV/
 env.bak/
 venv.bak/

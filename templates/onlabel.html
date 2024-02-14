@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OnLabel Form</title>
+</head>
+<body>
+  <h1>Onlabel Form</h1>
+  {% if error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+  <form action="/onlabel" method="POST">
+    <label for="question">Question:</label>
+    <input type="text" id="question" name="question" required>
+    <br><br>
+    <label for="drug_name"> Drug Name:</label>
+    <input type="text" id="drug_name" name="drug_name" required>
+    <br><br>
+    <label for="collection_name"> Collection Name </label>
+    <input type="text" id="collection_name" name="collection_name" required>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+
+</body>
+</html>

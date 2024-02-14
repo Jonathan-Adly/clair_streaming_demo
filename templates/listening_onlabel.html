@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Listening Page</title>
+</head>
+<body>
+  <h1>Channel Name: {{channel_name}}</h1>
+  <p>Query_ID = {{query_id}}</p>
+  <button onclick="start()">Start Listening</button>  <!-- button is here for illustration, should call start on window load-->
+<p id="error"> </p>
+<p id="answer"> Answer: </p>
+<p id="context"> Context: </p>
+<p id="references"> References <br>  </p>
+
+<script src="{{base_url}}/static/js/galenSDK.min.js" defer> </script>
+
+<script> 
+    /*
+    // this is how you would call start on window load
+       window.onload = function() {
+        start();
+    };
+    */
+
+    function start (){ 
+        
+        // handle event stream 
+        let channelName = "{{ channel_name }}" 
+        let queryID = "{{ query_id }}"
+
+        galenConnect(channelName, queryID).then(function(channel) {
+            //error 
+            channel.bind('error', function(data) {
+              console.log("Error: " + data);
+            });
+  
+            // start event
+            channel.bind('start', function(data) {
+                console.log("started stream..");
+            });
+  
+            // answer event
+            channel.bind("answer", function (data) {
+              let text = data.text;
+              document.getElementById("answer").innerHTML += text;
+            
+            });
+  
+            // answer_done event
+            channel.bind("answer_done", function (data) {
+              let complete_answer = data.text;
+              document.getElementById("answer").innerHTML = complete_answer;
+
+            });
+  
+            // context event
+            channel.bind("context", function (data) {
+                document.getElementById("context").innerHTML += data.text;
+            });
+  
+            // references event
+            channel.bind("references", function(data) {
+                document.getElementById("references").innerHTML += "<div> title:" + data.title + "</div>";
+                if (data.doi != null) {
+                document.getElementById("references").innerHTML += "<div> doi:" + data.doi + "</div>";
+                document.getElementById("references").innerHTML += "<div> url:" + data.url + "</div>";
+                document.getElementById("references").innerHTML += "<div> abstract:" + data.abstract + "</div>";
+                    }   
+            });
+            
+            // end event
+            channel.bind("end", function(data) {
+                console.log("ended stream..");
+                channel.unbind(); //unbind the channel when you are done listening
+                });
+              
+        }).catch(function(error) {
+          console.log("Error: " + error);
+        });
+         
+        // Call the ready to listen.
+        // note - this function, must be called after the channel is connected.
+        // only call when you are ready to receive events
+            galenReadyToListen(channelName, queryID);
+      
+        }
+/*
+old SDK: 
+function start() {
+    galenConnect(channelName, queryID, function(channel) {
+        channel.bind('start', function(data) {
+            console.log("started stream..");
+        });
+    });
+}
+
+new SDK:
+function start() {
+    galenConnect(channelName, queryID).then(function(channel) {
+        channel.bind('start', function(data) {
+            console.log("started stream..");
+        });
+    }).catch(function(error) {
+        console.log("Error: " + error);
+    });
+}
+*/
+  
+</script>
