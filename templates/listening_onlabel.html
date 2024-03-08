@@ -59,14 +59,17 @@
             });
   
             // references event
-            channel.bind("references", function(data) {
+            // references
+            channel.bind("references", function (data) {
+                // make a div for title, doi, url, abstract inside references 
                 document.getElementById("references").innerHTML += "<div> title:" + data.title + "</div>";
-                if (data.doi != null) {
-                document.getElementById("references").innerHTML += "<div> doi:" + data.doi + "</div>";
-                document.getElementById("references").innerHTML += "<div> url:" + data.url + "</div>";
-                document.getElementById("references").innerHTML += "<div> abstract:" + data.abstract + "</div>";
-                    }   
+                document.getElementById("references").innerHTML += "<div> Confidence:" + data.confidence + "</div>";
+       
+            // text can be large - optional to display
+                document.getElementById("references").innerHTML += "<div> text:" + data.text + "</div>";
+             
             });
+
             
             // end event
             channel.bind("end", function(data) {
